@@ -6,42 +6,52 @@ public class Main {
     static Scanner scanner = new Scanner(System.in);
     static final String NAME = "OpenPulse";
     static final String BUILD = "0003";
-    static final String DIVIDER = "\n--------------------------------------------\n";
-    static final int LENGTH = 44;
+    static final String DIVIDER = "\n----------------------------------------------------------------------\n";
+    static final int LENGTH = 70;
     static final char CHARACTER = '+';
 
     public static void main(String[] args) {
-        System.out.print("+++++++++++++ " + NAME + " [" + BUILD + "]" + " +++++++++++++");
+        System.out.print("++++++++++++++++++++++++++ " + NAME + " [" + BUILD + "]" + " ++++++++++++++++++++++++++");
         System.out.print(DIVIDER);
+        Data.init();
         start();
     }
 
     public static void start(){
         headline("Start");
 
-        System.out.print("Edit settings? [1/0]: ");
-        int selection = scanner.nextInt();
-        switch (selection){
-            case 0 -> {}
-            case 1 -> settings();
-            default -> exit(true, 1);
+        for(int i = 0; i < Data.getStartSelection().length; i++){
+            System.out.println("[" + (i + 1) + "]: " + Data.getStartSelection()[i]);
         }
+        int selection = (scanner.nextInt() - 1);
         scanner.nextLine();
+        if(selection > 3 || selection < 1){
+            exit(true, 2);
+        }
+        
+    }
+
+    public static void menu(){
+        headline("Menu");
+
     }
 
     public static void settings(){
         headline("Settings");
 
-        System.out.print("Edit Margin? [0/1]: ");
+        System.out.print("Edit Margin? [1/0]: ");
         int selection = scanner.nextInt();
         switch (selection){
             case 0 -> {}
             case 1 -> {
-                System.out.print("  Enter margin [Current: ±" + Settings.getMargin() + "%]: ");
+                System.out.print("     Enter Margin [Current: ±" + Data.getMargin() + "% / Range: 1-15]: ");
                 double margin = scanner.nextDouble();
                 scanner.nextLine();
-                Settings.setMargin(margin);
-                Settings.setMarginEdited(true);
+                if(margin > 15 || margin < 1){
+                    exit(true, 3);
+                }
+                Data.setMargin(margin);
+                Data.setMarginEdited(true);
             }
             default -> exit(true, 1);
         }
@@ -81,6 +91,7 @@ public class Main {
                 case 0 -> msg += "Forced session termination";
                 case 1 -> msg += "Invalid selection";
                 case 2 -> msg += "Input mismatch";
+                case 3 -> msg += "Input out of range";
                 default -> msg += "Internal Conflict";
             }
             msg += ".";
