@@ -5,7 +5,7 @@ import java.util.Scanner;
 public class Main {
     static Scanner scanner = new Scanner(System.in);
     static final String NAME = "OpenPulse";
-    static final String BUILD = "0003";
+    static final String BUILD = "0004";
     static final String DIVIDER = "\n----------------------------------------------------------------------\n";
     static final int LENGTH = 70;
     static final char CHARACTER = '+';
@@ -20,42 +20,71 @@ public class Main {
     public static void start(){
         headline("Start");
 
-        for(int i = 0; i < Data.getStartSelection().length; i++){
-            System.out.println("[" + (i + 1) + "]: " + Data.getStartSelection()[i]);
+        for(int i = 0; i < Data.getSTART().length; i++){
+            System.out.println("[" + (i + 1) + "]: " + Data.getSTART()[i]);
         }
+        System.out.print("\nSelection [Range: 1-" + Data.getSTART().length + "]: ");
         int selection = (scanner.nextInt() - 1);
         scanner.nextLine();
-        if(selection > 3 || selection < 1){
-            exit(true, 2);
+        if(selection > (Data.getSTART().length - 1) || selection < 0){
+            exit(true, 3);
         }
-        
+        switch (selection){
+            case 0 -> menu();
+            case 1 -> settings();
+            case 2 -> exit(false, 0);
+            default -> exit(true, 3);
+        }
     }
 
     public static void menu(){
-        headline("Menu");
+        headline("Main Menu");
 
+        for(int i = 0; i < Data.getMENU().length; i++){
+            System.out.println("[" + (i + 1) + "]: " + Data.getMENU()[i]);
+        }
+        System.out.print("\nSelection [Range: 1-" + Data.getMENU().length + "]: ");
+        int selection = (scanner.nextInt() - 1);
+        scanner.nextLine();
+        if(selection > (Data.getMENU().length - 1) || selection < 0){
+            exit(true, 3);
+        }
+        switch (selection){
+            case 0 -> Analysis.averageProjection();
+            case 1 -> {}
+            case 2 -> {}
+            case 3 -> {}
+            case 4 -> start();
+            default -> exit(true, 3);
+        }
     }
 
     public static void settings(){
         headline("Settings");
 
-        System.out.print("Edit Margin? [1/0]: ");
-        int selection = scanner.nextInt();
+        for(int i = 0; i < Data.getSETTINGS().length; i++){
+            System.out.println("[" + (i + 1) + "]: " + Data.getSETTINGS()[i]);
+        }
+        System.out.print("\nSelection [Range: 1-" + Data.getSETTINGS().length + "]: ");
+        int selection = (scanner.nextInt() - 1);
+        scanner.nextLine();
+        if(selection > (Data.getSETTINGS().length - 1) || selection < 0){
+            exit(true, 3);
+        }
         switch (selection){
-            case 0 -> {}
-            case 1 -> {
-                System.out.print("     Enter Margin [Current: ±" + Data.getMargin() + "% / Range: 1-15]: ");
-                double margin = scanner.nextDouble();
-                scanner.nextLine();
+            case 0 -> {
+                System.out.print("\nEnter Margin [Current: ±" + Data.getMargin() + "% / Range: ±[1-15]%]: ");
+                double margin = Math.abs(scanner.nextDouble());
                 if(margin > 15 || margin < 1){
                     exit(true, 3);
                 }
                 Data.setMargin(margin);
                 Data.setMarginEdited(true);
+                settings();
             }
-            default -> exit(true, 1);
+            case 1 -> start();
+            default -> exit(true, 3);
         }
-        //...
     }
 
     public static String centered(String item, char sym) {
@@ -63,10 +92,6 @@ public class Main {
             exit(true, 0);
         }
         int totalPadding = LENGTH - item.length() - 2;
-    
-        if (totalPadding <= 0) {
-            return " " + item + " ";
-        }
         int firstHalf = totalPadding / 2;
         int secondHalf = totalPadding - firstHalf;
         String output = "";
@@ -81,12 +106,12 @@ public class Main {
     }
 
     public static void headline(String item){
-        System.out.println("\n" + centered(item, CHARACTER));
+        System.out.println("\n" + centered(item, CHARACTER) + "\n");
     }
 
     public static void exit(boolean isError, int exitCode){
         if(isError){
-            String msg = "\nError: ";
+            String msg = "\nERROR: ";
             switch (exitCode){
                 case 0 -> msg += "Forced session termination";
                 case 1 -> msg += "Invalid selection";
@@ -98,7 +123,7 @@ public class Main {
             System.out.println(msg);
             System.exit(exitCode);
         } else {
-            System.out.println("\nSession terminated.");
+            headline("End");
             System.exit(0);
         }
     }
