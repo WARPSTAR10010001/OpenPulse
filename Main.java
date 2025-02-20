@@ -5,7 +5,7 @@ import java.util.Scanner;
 public class Main {
     static Scanner scanner = new Scanner(System.in);
     static final String NAME = "OpenPulse";
-    static final String BUILD = "0004";
+    static final String BUILD = "0005";
     static final String DIVIDER = "\n----------------------------------------------------------------------\n";
     static final int LENGTH = 70;
     static final char CHARACTER = '+';
@@ -50,7 +50,7 @@ public class Main {
             exit(true, 3);
         }
         switch (selection){
-            case 0 -> Analysis.averageProjection();
+            case 0 -> profitProjection.main();
             case 1 -> {}
             case 2 -> {}
             case 3 -> {}
